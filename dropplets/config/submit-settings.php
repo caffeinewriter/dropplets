@@ -39,7 +39,7 @@ if ($_POST["submit"] == "submit")
 
     if (!isset($password) || !empty($_POST["password"])) {
         if($blowfish_enabled) {
-                $rounds = 7
+                $rounds = 7;
                 $salt = ""; 
                 $salt_chars = array_merge(range('A','Z'), range('a','z'), range(0,9));
                 for($i=0; $i < 22; $i++) { 
