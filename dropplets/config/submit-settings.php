@@ -29,8 +29,31 @@ if ($_POST["submit"] == "submit")
 
     // There must always be a $password, but it can be changed optionally in the
     // settings, so you might not always get it in $_POST.
+
+    if(defined("CRYPT_BLOWFISH") && CRYPT_BLOWFISH) { 
+        $blowfish_enabled = true; 
+    }
+    else {
+        $blowfish_enabled = false;
+    }
+
     if (!isset($password) || !empty($_POST["password"])) {
-        $password = sha1($_POST["password"]);
+        if($blowfish_enabled) {
+                $rounds = 7
+                $salt = ""; 
+                $salt_chars = array_merge(range('A','Z'), range('a','z'), range(0,9));
+                for($i=0; $i < 22; $i++) { 
+                    $salt .= $salt_chars[array_rand($salt_chars)]; 
+                } 
+                $salt = sprintf('$2a%02d$'.$rounds).$salt;
+                $password = crypt($_POST["password"], $salt); 
+            }
+        }
+        else {
+            $password = sha1($_POST["password"]);
+            $salt = "";
+            $rounds = "";
+        }
     }
 
     if(!isset($header_inject)) {
@@ -59,6 +82,9 @@ if ($_POST["submit"] == "submit")
     $config[] = settings_format("intro_title", $intro_title);
     $config[] = settings_format("intro_text", $intro_text);
     $config[] = settings_format("password", $password);
+    $config[] = settings_format("salt", $salt);
+    $config[] = settings_format("rounds", $rounds);
+    $config[] = settings_format("blowfish_enabled", $blowfish_enabled);
     $config[] = settings_format("header_inject", $header_inject);
     $config[] = settings_format("footer_inject", $footer_inject);
     

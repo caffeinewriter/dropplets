@@ -23,13 +23,21 @@ if (isset($_GET['action'])) {
 
             // Session Authentication
             case 'login':
+
                 if ((isset($_POST['password']))
-                && (sha1($_POST['password'])===$password))
                 {
+                    if($blowfish_enabled) && (crypt($_POST["password"], $salt)===$password) {
                     $_SESSION['user']=true;
 
                     // Redirect
                     header('Location: ' . '../dashboard/');
+                    }
+                    else if (sha1($_POST["password"])===$password) {
+                        $_SESSION['user']=true;
+
+                        // Redirect
+                        header('Location: ' . '../dashboard/');
+                    }
                 } else {
                     $login_error = 'Nope, try again!';
                 }
