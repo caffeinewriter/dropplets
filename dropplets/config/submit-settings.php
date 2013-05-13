@@ -45,7 +45,7 @@ if ($_POST["submit"] == "submit")
                 for($i=0; $i < 22; $i++) { 
                     $salt .= $salt_chars[array_rand($salt_chars)]; 
                 } 
-                $salt = sprintf('$2a%02d$'.$rounds).$salt;
+                $salt = '$2a$10$'.$salt;
                 $password = crypt($_POST["password"], $salt); 
             }
         }
